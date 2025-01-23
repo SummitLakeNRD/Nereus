@@ -11,7 +11,8 @@ def main():
 
     retrieve = retrieveData(args.client_file)
 
-    raw_data = retrieve.pitTags('10.30.8.6')
+
+    raw_data = retrieve.pitTags('10.30.8.2')
     formatted_data = retrieve.formatTagData(raw_data)
     print(formatted_data)
 
