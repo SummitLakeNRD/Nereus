@@ -11,8 +11,11 @@ class retrieveData:
 
 
     def pitTags(self, port=10001):
+        # Generate blank list to put output from each 
+        raw_list = []
+
         # Loop through PIT antenna clients and grab data
-        for clients in self.clients:
+        for client in self.clients:
 
         # Create a socket object with a timeout to prevent indefinite blocking
             with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
@@ -21,7 +24,7 @@ class retrieveData:
 
                 try:
                     # Connect to the device
-                    s.connect((ip_address, port))
+                    s.connect((client[0], port))
 
                     # Send the request command for 'Memory Tag Download' (MTD)
                     request_command = b'MTD\r\n'
@@ -33,28 +36,41 @@ class retrieveData:
                     # Read data in chunks, printing what we get back
                     while True:
                         # Receive data in 1024-byte chunks
-                        data = s.recv(1024)  
-                        if not data:
+                        byte_data = s.recv(1024) 
+                        if not byte_data:
                             break  # Exit loop if no more data is received
                                    # Should always be recieved regardless of 
                                    # tags collected or not.
 
+                        data = byte_data.decode('utf-8')
+
                         # Biomark ends report with 'Complete', this will end it
-                        if b'Complete' in data:  
+                        if b'Complete' in byte_data: 
                             break
 
                     # Convert data from bytestring to str and return
-                    return data.decode('utf-8')
+                    raw_list.append([data, client[0], client[1], client[2]])
 
                 # Error handling 
                 except socket.timeout: # Throw exception if socket request hangs
-                    print("Timeout occurred while waiting for data.")
+                    print("""Timeout occurred while waiting for data.
+                          Network likely down: {}""".format(
+                              time.strftime("%Y-%m-%d %H:%M:%S", 
+                                            time.gmtime())))
                     raise
                 except Exception as e: # Log errors to service file error log
                     print(f"Error: {e}")
                     raise
+
+        return raw_list
             
     def formatTagData(self, raw_data):
+        
+        for line in raw_data:
+            line[0].split(' ')[1:5] # fix this
+            if 'TAG' in line[0]:
+                print(line[0])
+        '''
         tag_data = []
         for line in raw_data.splitlines():
             # 'TAG' included in serial out with tag data, excludes else
@@ -65,5 +81,7 @@ class retrieveData:
 
         # Format to tuple for .executemany method in psycopg
         return tuple(tag_data)
+        '''
+        return 0
 
 

@@ -12,9 +12,10 @@ def main():
     retrieve = retrieveData(args.client_file)
 
 
-    raw_data = retrieve.pitTags('10.30.8.2')
-    formatted_data = retrieve.formatTagData(raw_data)
-    print(formatted_data)
+    raw_data = retrieve.pitTags()
+    print(raw_data)
+    formatted = retrieve.formatTagData(raw_data)
+    #print(formatted_data)
 
 
 if __name__ == '__main__':
