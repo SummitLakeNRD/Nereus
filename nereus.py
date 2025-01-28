@@ -13,10 +13,8 @@ def main():
 
 
     raw_data = retrieve.pitTags()
-    print(raw_data)
     formatted = retrieve.formatTagData(raw_data)
-    #print(formatted_data)
-
+    
 
 if __name__ == '__main__':
     main()
