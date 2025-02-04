@@ -1,0 +1,18 @@
+## Place file in the following destination: /etc/systemd/system/ ###
+
+[Unit]
+Description=Nereus program to download Biomark IS1001s to SLPT database
+After=multi-user.target
+
+[Service]
+Type=idle
+ExecStart=/path/to/Nereus/venv/bin/python /path/to/Nereus/nereus.py /path/to/client/file.txt
+WorkingDirectory=/path/to/directory/Nereus
+StandardOutput=file:/path/to/directory/Nereus/errorLogs/main_output.log
+StandardError=file:/path/to/directory/Nereus/errorLogs/error_file.log
+Restart=always
+RestartSec=14400
+User=<USER>
+
+[Install]
+WantedBy=multi-user.target
