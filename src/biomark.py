@@ -31,9 +31,9 @@ class retrieveData:
                         # Receive data in 1024-byte chunks
                         byte_data = s.recv(1024) 
                         if not byte_data:
-                            break  # Exit loop if no more data is received
-                                   # Should always be recieved regardless of 
-                                   # tags collected or not.
+                            continue  # Pass loop iteration if no more data is 
+                                      # received should always be recieved  
+                                      # regardless of tags collected or not.
                         data = byte_data.decode('utf-8')
                         # Biomark ends report with 'Complete', this will end it
                         if b'Complete' in byte_data: 
@@ -43,13 +43,14 @@ class retrieveData:
                 # Error handling 
                 except socket.timeout: # Throw exception if socket request hangs
                     print("""Timeout occurred while waiting for data.
-                          Network likely down: {}""".format(
-                              time.strftime("%Y-%m-%d %H:%M:%S", 
-                                            time.gmtime())))
-                    raise
+                          Network likely down: {}""".
+                          format(time.strftime("%Y-%m-%d %H:%M:%S", 
+                                               time.gmtime())))
+                    continue
                 except Exception as e: # Log errors to service file error log
-                    print(f"Error: {e}")
-                    raise
+                    print(f"Unknown error: {e}")
+                    continue
+
         return raw_list
             
     def formatTagData(self, raw_data):

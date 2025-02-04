@@ -1,5 +1,6 @@
 from argparse import ArgumentParser
 from src.biomark import retrieveData
+from src.postgres import database
 
 
 def main():
@@ -10,11 +11,13 @@ def main():
     args = parser.parse_args()
 
     retrieve = retrieveData(args.client_file)
+    db = database('<DBNAME>', '<USER>', '<PASSWORD>',
+                  '<HOST>', '<PORT>')
 
 
     raw_data = retrieve.pitTags()
     formatted = retrieve.formatTagData(raw_data)
-    
+    db.append(formatted)
 
 if __name__ == '__main__':
     main()
